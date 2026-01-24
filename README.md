@@ -46,65 +46,78 @@
 
 ## 🚀 Installation
 
-### From Source (Developer Mode)
+### Quick Install (3 Steps!)
 
-1. **Clone the repository:**
+1. **Download ZIP:**
+   - Go to [Releases](https://github.com/YOUR_USERNAME/study-dashboard/releases)
+   - Download `study-dashboard.zip`
 
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/study-dashboard.git
-   cd study-dashboard
-   ```
+2. **Extract:**
+   - Extract ZIP to any folder
+   - Example: `C:\Extensions\study-dashboard\`
 
-2. **Configure Firebase:**
-   - Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
-   - Enable Authentication (Google & Email/Password)
-   - Enable Firestore Database
-   - Copy your Firebase config to `firebase-config.js`
-
-3. **Configure OAuth (for Google Sign-In):**
-   - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Create OAuth 2.0 Client ID (Web Application type)
-   - Add authorized redirect URI: `https://[YOUR_EXTENSION_ID].chromiumapp.org/`
-   - Copy Client ID to `oauth-config.js`
-
-4. **Load extension in Chrome:**
+3. **Load in Chrome:**
    - Open `chrome://extensions/`
-   - Enable "Developer mode"
-   - Click "Load unpacked"
-   - Select the `study-dashboard` folder
+   - Turn ON **"Developer mode"** (top right toggle)
+   - Click **"Load unpacked"**
+   - Select the extracted folder
+   - ✅ Done!
+
+### First Time Use
+
+1. Click the extension icon in Chrome toolbar
+2. **Login** with Google OR register with email/password
+3. Start adding classes and tasks!
 
 ---
 
-## 🔧 Configuration
+## 🔄 How to Update
 
-### Firebase Setup
+Since extension is installed via "Load unpacked", it doesn't auto-update.
 
-Edit `firebase-config.js`:
+**To update manually:**
+
+1. Download new version ZIP from Releases
+2. Extract and replace old files
+3. Go to `chrome://extensions/`
+4. Click **Reload** button on Study Dashboard
+5. Updated! ✅
+
+---
+
+## ⚙️ Advanced Configuration (Optional)
+
+<details>
+<summary><b>Want to use your own Firebase backend?</b> Click to expand</summary>
+
+The extension comes pre-configured and ready to use. But if you want your own Firebase:
+
+### 1. Create Firebase Project
+
+- Go to [Firebase Console](https://console.firebase.google.com/)
+- Create project
+- Enable Authentication (Google & Email/Password)
+- Enable Firestore Database
+
+### 2. Edit `firebase-config.js`
 
 ```javascript
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "your-project.firebaseapp.com",
   projectId: "your-project-id",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef",
-  measurementId: "G-XXXXXXXXXX",
+  // ... rest of config
 };
 ```
 
-### OAuth Configuration
+### 3. Setup OAuth (for Google Sign-In)
 
-Edit `oauth-config.js`:
+- Go to [Google Cloud Console](https://console.cloud.google.com/)
+- Create OAuth Client ID (Web Application)
+- Add redirect URI: `https://[YOUR_EXTENSION_ID].chromiumapp.org/`
+- Edit `oauth-config.js` with Client ID
 
-```javascript
-const OAUTH_CONFIG = {
-  clientId: "YOUR_CLIENT_ID.apps.googleusercontent.com",
-  scopes: ["email", "profile"],
-};
-```
-
-### Firestore Security Rules
+### 4. Set Firestore Rules
 
 ```javascript
 rules_version = '2';
@@ -112,11 +125,9 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
-
       match /tasks/{taskId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
-
       match /classes/{classId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
@@ -124,6 +135,8 @@ service cloud.firestore {
   }
 }
 ```
+
+</details>
 
 ---
 
