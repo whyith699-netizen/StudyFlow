@@ -1,0 +1,60 @@
+{
+  "manifest_version": 3,
+  "name": "Study Dashboard",
+  "version": "1.0",
+  "description": "A comprehensive study dashboard with timer, tasks, and auto time tracking",
+  "icons": {
+    "16": "assets/icons/study 16.png",
+    "48": "assets/icons/study 48.png",
+    "128": "assets/icons/study 128.png"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "webNavigation",
+    "notifications",
+    "alarms",
+    "identity"
+  ],
+  "host_permissions": [
+    "https://*.googleapis.com/*",
+    "https://*.firebaseio.com/*",
+    "https://*.gstatic.com/*"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Study Dashboard",
+    "default_icon": {
+      "16": "assets/icons/study 16.png",
+      "48": "assets/icons/study 48.png",
+      "128": "assets/icons/study 128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "dashboard/dashboard.html",
+        "dashboard/dashboard.css",
+        "dashboard/dashboard.js",
+        "dashboard/class-detail.html",
+        "dashboard/class-detail.css",
+        "dashboard/class-detail.js",
+        "popup/class-detail-popup.html",
+        "popup/class-detail-popup.css",
+        "popup/class-detail-popup.js",
+        "popup/add-task-popup.html",
+        "popup/add-task-popup.js",
+        "popup/login-popup.html",
+        "popup/login-popup.js",
+        "firebase-config.js",
+        "sync-service.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

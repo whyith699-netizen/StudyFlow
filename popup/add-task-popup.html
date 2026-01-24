@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Task - Study Dashboard</title>
+    <link rel="stylesheet" href="popup.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="extension-container" style="max-height: 468px">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-left" id="back-to-popup" style="cursor: pointer">
+          <i class="fas fa-arrow-left"></i>
+          <h1>Add Task</h1>
+        </div>
+        <div class="header-right">
+          <div class="time-display">
+            <div id="current-date-popup" class="date"></div>
+            <div id="current-time-popup" class="time"></div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Add Task Form -->
+      <section class="card">
+        <form id="add-task-form-popup" class="add-task-form">
+          <!-- Task Title + Type + Attachments Row -->
+          <div class="task-title-row">
+            <div class="title-with-attachments">
+              <input
+                type="text"
+                id="task-title-popup"
+                class="task-title-input"
+                placeholder="Task title..."
+                required
+              />
+              <div class="inline-attachments">
+                <input type="file" id="task-file-upload" hidden />
+                <label
+                  for="task-file-upload"
+                  class="btn-attach"
+                  title="Attach file"
+                >
+                  <i class="fas fa-paperclip"></i>
+                </label>
+                <button
+                  type="button"
+                  id="attach-link-btn"
+                  class="btn-attach"
+                  title="Attach link"
+                >
+                  <i class="fas fa-link"></i>
+                </button>
+              </div>
+            </div>
+            <select id="task-type-popup" class="task-type-select">
+              <option value="Exam">Exam</option>
+              <option value="Individual Task">Individual</option>
+              <option value="Group Task">Group</option>
+            </select>
+          </div>
+          <input
+            type="text"
+            id="task-link-input"
+            class="task-link-input"
+            placeholder="Enter link URL..."
+            style="display: none"
+          />
+
+          <div class="custom-select-wrapper">
+            <button type="button" class="custom-select-button">
+              <span id="selected-class-name">Select Class</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div id="class-select-panel" class="custom-select-panel">
+              <div class="custom-select-search-wrapper">
+                <i class="fas fa-search"></i>
+                <input
+                  type="text"
+                  id="task-class-search-popup"
+                  placeholder="Search or select class..."
+                />
+              </div>
+              <div class="custom-select-options-container">
+                <!-- Class options will be dynamically inserted here -->
+              </div>
+            </div>
+            <input type="hidden" id="task-class-popup" />
+          </div>
+          <div class="form-row">
+            <input type="date" id="task-deadline-popup" />
+            <select id="task-priority-popup">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="task-notes-popup">Notes (Optional)</label>
+            <textarea
+              id="task-notes-popup"
+              class="task-notes-input"
+              placeholder="Add any additional notes..."
+              rows="2"
+            ></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Task</button>
+        </form>
+      </section>
+    </div>
+
+    <script src="../lib/firebase/firebase-app-compat.js"></script>
+    <script src="../lib/firebase/firebase-auth-compat.js"></script>
+    <script src="../lib/firebase/firebase-firestore-compat.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="../sync-service.js"></script>
+    <script src="auth-guard.js"></script>
+    <script src="add-task-popup.js"></script>
+  </body>
+</html>

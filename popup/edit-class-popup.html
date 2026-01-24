@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Class - Study Dashboard</title>
+    <link rel="stylesheet" href="popup.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="extension-container" style="max-height: 520px;">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left" id="back-button" style="cursor: pointer;">
+                <i class="fas fa-arrow-left"></i>
+                <h1>Edit Class</h1>
+            </div>
+            <div class="header-right">
+                <div class="time-display">
+                    <div id="current-date-popup" class="date"></div>
+                    <div id="current-time-popup" class="time"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Edit Class Form -->
+        <section class="card">
+            <form id="edit-class-form" class="add-class-form-popup">
+                <div class="form-group">
+                    <label for="class-name">Class Name</label>
+                    <div class="class-name-row">
+                        <div class="icon-picker-compact">
+                            <button type="button" class="icon-preview-btn" id="icon-preview-btn" title="Choose Icon">
+                                <i id="current-icon" class="fas fa-chalkboard-teacher"></i>
+                            </button>
+                            <div class="icon-grid" id="icon-grid">
+                                <!-- Icons will be populated by JS -->
+                            </div>
+                        </div>
+                        <input type="text" id="class-name" placeholder="e.g. Mathematics" required>
+                        <input type="hidden" id="selected-icon" value="">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Links</label>
+                    <div id="links-container" class="links-input-container">
+                        <!-- Links will be populated dynamically -->
+                    </div>
+                    <button type="button" id="add-link-btn" class="btn btn-outline btn-sm">
+                        <i class="fas fa-plus"></i> Add Link
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label>Schedule Days</label>
+                    <div class="day-checkboxes">
+                        <label class="day-checkbox">
+                            <input type="checkbox" name="days" value="monday">
+                            <span>Mon</span>
+                        </label>
+                        <label class="day-checkbox">
+                            <input type="checkbox" name="days" value="tuesday">
+                            <span>Tue</span>
+                        </label>
+                        <label class="day-checkbox">
+                            <input type="checkbox" name="days" value="wednesday">
+                            <span>Wed</span>
+                        </label>
+                        <label class="day-checkbox">
+                            <input type="checkbox" name="days" value="thursday">
+                            <span>Thu</span>
+                        </label>
+                        <label class="day-checkbox">
+                            <input type="checkbox" name="days" value="friday">
+                            <span>Fri</span>
+                        </label>
+                        <label class="day-checkbox">
+                            <input type="checkbox" name="days" value="saturday">
+                            <span>Sat</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" id="delete-class-btn" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script src="../lib/firebase/firebase-app-compat.js"></script>
+    <script src="../lib/firebase/firebase-auth-compat.js"></script>
+    <script src="../lib/firebase/firebase-firestore-compat.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="../sync-service.js"></script>
+    <script src="auth-guard.js"></script>
+    <script src="edit-class-popup.js"></script>
+</body>
+</html>

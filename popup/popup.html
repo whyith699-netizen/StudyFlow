@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Dashboard</title>
+    <link rel="stylesheet" href="popup.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="extension-container">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>StudyFlow</h1>
+            </div>
+            <div class="header-right">
+                <div class="time-display">
+                    <div id="current-date-popup" class="date"></div>
+                    <div id="current-time-popup" class="time"></div>
+                </div>
+                <div class="header-actions">
+                    <button id="header-logout-btn" class="header-btn" title="Logout" style="display: none;">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+
+                    <a href="login-popup.html" id="account-btn" class="header-btn" title="Account">
+                        <i class="fas fa-user-circle"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- My Classes Section -->
+        <section class="card">
+            <div class="card-header">
+                <i class="fas fa-chalkboard"></i>
+                <h3>My Classes</h3>
+                <div class="search-wrapper-popup">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="class-search-popup" placeholder="Search...">
+                </div>
+                <div class="header-btn-group">
+                    <button id="export-data-btn" class="btn btn-outline btn-sm btn-icon-only" title="Export Data">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button id="import-data-btn" class="btn btn-outline btn-sm btn-icon-only" title="Import Data">
+                        <i class="fas fa-upload"></i>
+                    </button>
+                    <input type="file" id="import-file-input" accept=".json" style="display: none;">
+                    <a href="add-class-popup.html" class="btn btn-primary btn-sm" style="text-decoration: none;" title="Add Class">
+                        <i class="fas fa-plus" style="color: white;"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="day-filter">
+                <button class="day-btn active" data-day="all">All</button>
+                <button class="day-btn" data-day="monday">Mon</button>
+                <button class="day-btn" data-day="tuesday">Tue</button>
+                <button class="day-btn" data-day="wednesday">Wed</button>
+                <button class="day-btn" data-day="thursday">Thu</button>
+                <button class="day-btn" data-day="friday">Fri</button>
+                <button class="day-btn" data-day="saturday">Sat</button>
+            </div>
+            <div id="class-list-popup" class="class-grid">
+                <!-- Kelas akan ditambahkan di sini -->
+            </div>
+            <div id="class-pagination" class="class-pagination" style="display: none;">
+                <button class="class-pagination-btn" id="class-prev-btn">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <span class="class-pagination-info" id="class-page-info">1 / 1</span>
+                <button class="class-pagination-btn" id="class-next-btn">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Tasks Section -->
+        <section class="card card-clickable" id="tasks-section">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <i class="fas fa-tasks color-warning"></i>
+                    <h3>My Tasks</h3>
+                </div>
+                <div class="task-header-actions compact-row">
+                    <div class="task-quick-stats" id="task-quick-stats">
+                        <span class="stat-item stat-exam" title="Exams"><i class="fas fa-file-alt"></i> <span id="stat-exam-count">0</span></span>
+                        <span class="stat-item stat-individual" title="Individual Tasks"><i class="fas fa-user"></i> <span id="stat-individual-count">0</span></span>
+                        <span class="stat-item stat-group" title="Group Tasks"><i class="fas fa-users"></i> <span id="stat-group-count">0</span></span>
+                    </div>
+                    <a href="add-task-popup.html" class="btn btn-primary btn-add-task btn-sm"
+                        style="text-decoration: none; display: inline-flex; align-items: center; gap: 4px;"
+                        onclick="event.stopPropagation();">
+                        <i class="fas fa-plus"></i> Add
+                    </a>
+                    <a href="my-tasks-popup.html" class="btn btn-outline btn-sm" style="text-decoration: none;"
+                        onclick="event.stopPropagation();" title="View All Tasks">
+                        <i class="fas fa-list"></i>
+                    </a>
+                    <div class="task-count-badge-popup" id="task-count-badge-popup" data-count="0">
+                        <span class="badge-number">0</span>
+                        <div class="task-breakdown-tooltip" id="task-breakdown-tooltip">
+                            <div class="tooltip-header">Pending Tasks</div>
+                            <div class="tooltip-content">
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">Exam:</span>
+                                    <span class="breakdown-value" id="breakdown-ulangan">0</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">Individual:</span>
+                                    <span class="breakdown-value" id="breakdown-individu">0</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">Group:</span>
+                                    <span class="breakdown-value" id="breakdown-kelompok">0</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">Other:</span>
+                                    <span class="breakdown-value" id="breakdown-lainnya">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="../lib/firebase/firebase-app-compat.js"></script>
+    <script src="../lib/firebase/firebase-auth-compat.js"></script>
+    <script src="../lib/firebase/firebase-firestore-compat.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="../sync-service.js"></script>
+    <script src="auth-guard.js"></script>
+    <script src="confirm-modal-helper.js"></script>
+    <script src="popup.js"></script>
+</body>
+
+</html>
