@@ -12,12 +12,22 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     const classSearch = document.getElementById('class-search-popup');
     const tasksSection = document.getElementById('tasks-section');
+    const classList = document.getElementById('class-list-popup'); // Capture class list container
 
     if (classSearch) classSearch.addEventListener('input', filterClassesPopup);
     if (tasksSection) {
         tasksSection.addEventListener('click', function() {
             window.location.href = 'my-tasks-popup.html';
         });
+    }
+
+    // Drag and Drop Event Listeners
+    if (classList) {
+        classList.addEventListener('dragstart', handleDragStart);
+        classList.addEventListener('dragover', handleDragOver);
+        classList.addEventListener('drop', handleDrop);
+        classList.addEventListener('dragenter', handleDragEnter);
+        classList.addEventListener('dragleave', handleDragLeave);
     }
 
     // Class pagination
@@ -331,6 +341,11 @@ function renderClassesPopup() {
 
             classItem.appendChild(link);
             classItem.appendChild(name);
+
+            // Make Draggable
+            classItem.draggable = true;
+            classItem.dataset.index = startIndex + i; // Store actual index in myClassesCache
+            classItem.dataset.id = cls.id;
         } else if (filteredClasses.length === 0 && i === 9) {
             // Show empty state message in the middle row (row 4, spanning all 3 columns, slot 9-11)
             classItem.style.gridColumn = '1 / -1';
@@ -558,8 +573,8 @@ function exportAllData() {
         
         const classCount = (result.myClasses || []).length;
         const taskCount = (result.tasks || []).length;
-        showNotification('Export Berhasil! ✅', 
-            `${classCount} kelas dan ${taskCount} tugas telah diekspor.`);
+        showNotification('<i class="fas fa-check-circle"></i> Export Successful!', 
+            `${classCount} classes and ${taskCount} tasks exported.`);
     });
 }
 
@@ -573,59 +588,55 @@ function importAllData(file) {
             const importData = JSON.parse(e.target.result);
             
             if (!importData.data) {
-                showNotification('Import Gagal ❌', 'Format file tidak valid.');
+                showNotification('<i class="fas fa-times-circle"></i> Import Failed', 'Invalid file format.');
                 return;
             }
             
             const classCount = (importData.data.myClasses || []).length;
             const taskCount = (importData.data.tasks || []).length;
             const exportDate = importData.exportDate ? 
-                new Date(importData.exportDate).toLocaleDateString('id-ID', {
+                new Date(importData.exportDate).toLocaleDateString('en-US', {
                     year: 'numeric', month: 'long', day: 'numeric'
-                }) : 'Tidak diketahui';
+                }) : 'Unknown';
             
             const confirmMessage = 
-                `📦 Data yang akan diimpor:\n\n` +
-                `📚 Kelas: ${classCount}\n` +
-                `✅ Tugas: ${taskCount}\n` +
-                `📅 Ekspor: ${exportDate}\n\n` +
-                `⚠️ Ini akan MENGGANTI semua data saat ini.\n\n` +
-                `Lanjutkan?`;
+                `<strong><i class="fas fa-box-open"></i> Data to import:</strong><br><br>` +
+                `<i class="fas fa-book"></i> Classes: ${classCount}<br>` +
+                `<i class="fas fa-tasks"></i> Tasks: ${taskCount}<br>` +
+                `<i class="fas fa-calendar-alt"></i> Exported: ${exportDate}<br><br>` +
+                `<strong><i class="fas fa-exclamation-triangle"></i> This will REPLACE all current data.</strong><br><br>` +
+                `Continue?`;
             
-            if (!confirm(confirmMessage)) {
-                showNotification('Import Dibatalkan', 'Tidak ada data yang diubah.');
-                return;
-            }
-            
-            const dataToImport = {};
-            const validKeys = ['myClasses', 'tasks', 'darkMode', 'hasInitializedClasses', 'sentNotifications'];
-            
-            validKeys.forEach(key => {
-                if (importData.data.hasOwnProperty(key)) {
-                    dataToImport[key] = importData.data[key];
-                }
-            });
-            
-            chrome.storage.local.set(dataToImport, function() {
-                showNotification('Import Berhasil! ✅', 
-                    `${classCount} kelas dan ${taskCount} tugas berhasil diimpor.`);
+            // Use custom modal with custom icon
+            showConfirmModal('Import Data', confirmMessage, function() {
+                const dataToImport = {};
+                const validKeys = ['myClasses', 'tasks', 'darkMode', 'hasInitializedClasses', 'sentNotifications'];
                 
-                loadClassesPopup();
-                loadTaskCounts();
+                validKeys.forEach(key => {
+                    if (importData.data.hasOwnProperty(key)) {
+                        dataToImport[key] = importData.data[key];
+                    }
+                });
                 
+                chrome.storage.local.set(dataToImport, function() {
+                    showNotification('<i class="fas fa-check-circle"></i> Import Successful!', 
+                        `${classCount} classes and ${taskCount} tasks imported.`);
+                    
+                    loadClassesPopup();
+                    loadTaskCounts();
+                    
+                    chrome.runtime.sendMessage({ action: 'updateBadge' });
+                });
+            }, 'fa-file-import'); // Custom icon for import modal
 
-                
-                chrome.runtime.sendMessage({ action: 'updateBadge' });
-            });
-            
         } catch (error) {
             console.error('Import error:', error);
-            showNotification('Import Gagal ❌', 'File tidak valid.');
+            showNotification('<i class="fas fa-times-circle"></i> Import Failed', 'Invalid file.');
         }
     };
     
     reader.onerror = function() {
-        showNotification('Import Gagal ❌', 'Tidak dapat membaca file.');
+        showNotification('<i class="fas fa-times-circle"></i> Import Failed', 'Cannot read file.');
     };
     
     reader.readAsText(file);
@@ -762,4 +773,100 @@ function triggerDataSync() {
     if (typeof syncService !== 'undefined' && syncService.isLoggedIn()) {
         syncService.triggerSync();
     }
+}
+
+// ==========================================
+// DRAG AND DROP FUNCTIONS
+// ==========================================
+
+let dragSrcEl = null;
+
+function handleDragStart(e) {
+    if (!e.target.closest('.class-item')) return;
+    
+    // Only allow dragging if it's a valid class item (has ID)
+    const item = e.target.closest('.class-item');
+    if (!item.dataset.id) {
+        e.preventDefault();
+        return;
+    }
+
+    dragSrcEl = item;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', item.dataset.index);
+    
+    // Add dragging class for visual feedback
+    item.classList.add('dragging');
+}
+
+function handleDragOver(e) {
+    if (e.preventDefault) {
+        e.preventDefault(); // Necessary. Allows us to drop.
+    }
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+}
+
+function handleDragEnter(e) {
+    const item = e.target.closest('.class-item');
+    if (item && item.dataset.id && item !== dragSrcEl) {
+        item.classList.add('over');
+    }
+}
+
+function handleDragLeave(e) {
+    const item = e.target.closest('.class-item');
+    if (item && item.dataset.id) {
+        item.classList.remove('over');
+    }
+}
+
+async function handleDrop(e) {
+    if (e.stopPropagation) {
+        e.stopPropagation(); // stops the browser from redirecting.
+    }
+    
+    const dropTarget = e.target.closest('.class-item');
+
+    // Clean up style
+    document.querySelectorAll('.class-item').forEach(col => {
+        col.classList.remove('over');
+        col.classList.remove('dragging');
+    });
+
+    if (!dropTarget || !dropTarget.dataset.id || dragSrcEl === dropTarget) {
+        return false;
+    }
+
+    const fromIndex = parseInt(dragSrcEl.dataset.index);
+    const toIndex = parseInt(dropTarget.dataset.index);
+
+    // Reorder array
+    const movedItem = myClassesCache[fromIndex];
+    myClassesCache.splice(fromIndex, 1);
+    myClassesCache.splice(toIndex, 0, movedItem);
+
+    // Update order property for all items
+    myClassesCache.forEach((cls, index) => {
+        cls.order = index;
+    });
+
+    // Optimistic UI update
+    renderClassesPopup();
+
+    try {
+        // Save locally first
+        await new Promise(resolve => {
+            chrome.storage.local.set({ myClasses: myClassesCache }, resolve);
+        });
+
+        // Trigger sync to push new orders to cloud
+        syncService.triggerSync();
+        
+    } catch (error) {
+        console.error('Error saving reordered classes:', error);
+        showNotification('Error', 'Failed to save new order.');
+    }
+    
+    return false;
 }

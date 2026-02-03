@@ -29,11 +29,10 @@
       <!-- Tasks Section -->
       <section class="card">
         <div class="section-header">
-          <div class="section-title-wrapper">
-            <i class="fas fa-tasks color-warning"></i>
-            <h3>All Tasks</h3>
-          </div>
-          <div class="task-header-actions compact-row">
+          <div class="task-header-actions compact-row" style="width: 100%; justify-content: space-between;">
+            <select id="task-class-filter" class="day-filter-select" style="margin-right: 8px; max-width: 130px;">
+                <option value="all">All Classes</option>
+            </select>
             <select id="task-day-filter" class="day-filter-select">
               <option value="all">All Days</option>
               <option value="monday">Monday</option>
@@ -44,12 +43,18 @@
               <option value="saturday">Saturday</option>
               <option value="sunday">Sunday</option>
             </select>
+            <div class="search-wrapper-popup" style="margin-right: 8px; max-width: 150px;">
+                <i class="fas fa-search"></i>
+                <input type="text" id="task-search-input" placeholder="Search..." style="padding: 6px 8px 6px 30px; font-size: 0.85rem; border: 1px solid var(--border); border-radius: 6px; width: 100%;">
+            </div>
+            <div class="header-spacer"></div>
             <a
               href="add-task-popup.html"
               class="btn btn-primary btn-sm"
-              style="text-decoration: none"
+              style="text-decoration: none; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; padding: 0;"
+              title="Add Task"
             >
-              <i class="fas fa-plus"></i> Add
+              <i class="fas fa-plus"></i>
             </a>
           </div>
         </div>

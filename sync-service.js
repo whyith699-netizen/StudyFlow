@@ -438,7 +438,8 @@ const syncService = {
             });
             
             console.log(`Loaded ${classes.length} classes from cloud`);
-            return classes;
+            // Sort by order
+            return classes.sort((a, b) => (a.order || 0) - (b.order || 0));
         } catch (error) {
             console.error('Failed to get classes from cloud:', error);
             throw new Error('Failed to load classes. Please check your connection.');

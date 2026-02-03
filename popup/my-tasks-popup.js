@@ -19,18 +19,37 @@ document.addEventListener('DOMContentLoaded', async function() {
         currentDayFilter = this.value;
         loadTasks();
     });
+
+    // Class filter
+    document.getElementById('task-class-filter').addEventListener('change', function() {
+        currentClassFilter = this.value;
+        loadTasks();
+    });
     
     // Clear completed
     document.getElementById('clear-completed-btn').addEventListener('click', clearCompletedTasks);
+
+    // Search input
+    const searchInput = document.getElementById('task-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            currentSearchTerm = e.target.value.toLowerCase();
+            loadTasks();
+        });
+    }
 });
 
 let currentDayFilter = 'all';
+let currentSearchTerm = '';
+let currentClassFilter = 'all';
 
 async function loadTasks() {
     try {
         let tasks = await syncService.getTasks();
         
-        // Filter by day if needed
+        // Populate class filter dynamically (only once or update if needed)
+        populateClassFilter(tasks);
+        
         if (currentDayFilter !== 'all') {
             tasks = tasks.filter(task => {
                 if (!task.day) {
@@ -42,6 +61,23 @@ async function loadTasks() {
                     return false;
                 }
                 return task.day === currentDayFilter;
+            });
+        }
+
+        // Filter by class
+        if (currentClassFilter !== 'all') {
+            tasks = tasks.filter(task => task.className === currentClassFilter);
+        }
+
+        // Filter by search term
+        if (currentSearchTerm) {
+            tasks = tasks.filter(task => {
+                const title = (task.title || task.text || '').toLowerCase();
+                const className = (task.className || '').toLowerCase();
+                const notes = (task.notes || '').toLowerCase();
+                return title.includes(currentSearchTerm) || 
+                       className.includes(currentSearchTerm) || 
+                       notes.includes(currentSearchTerm);
             });
         }
         
@@ -64,8 +100,11 @@ function renderTasks(tasks) {
         return;
     }
     
-    // Sort: pending first, then by priority (high first), then by deadline (soonest first)
+    // Sort: Pinned first, then pending first, then by priority (high first), then by deadline (soonest first)
     tasks.sort((a, b) => {
+        // Pinned tasks go to top
+        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+
         // Completed tasks go to bottom
         if (a.completed !== b.completed) return a.completed ? 1 : -1;
         
@@ -92,6 +131,7 @@ function renderTasks(tasks) {
         const taskEl = document.createElement('div');
         taskEl.className = 'task-item-popup';
         if (task.completed) taskEl.classList.add('completed');
+        if (task.pinned) taskEl.classList.add('pinned');
         if (task.priority) taskEl.classList.add(`priority-${task.priority}`);
         
         const isOverdue = task.deadline && new Date(task.deadline) < new Date() && !task.completed;
@@ -113,7 +153,7 @@ function renderTasks(tasks) {
                 <div class="task-header-row">
                     <span class="task-title">${task.title || task.text}</span>
                     <span class="task-type-badge task-type-${(task.text || '').toLowerCase().replace(' ', '-')}">${task.text || ''}</span>
-                    ${task.priority ? `<span class="priority-icon priority-${task.priority}"><i class="fas ${priorityIcons[task.priority]}"></i></span>` : ''}
+                    ${task.priority ? `<span class="priority-tag priority-${task.priority}">${task.priority}</span>` : ''}
                 </div>
                 <div class="task-meta-row">
                     ${task.className ? `<span class="task-meta-item"><i class="fas fa-chalkboard-teacher"></i> ${task.className}</span>` : ''}
@@ -124,6 +164,9 @@ function renderTasks(tasks) {
                 ${task.notes ? `<div class="task-notes-preview"><i class="fas fa-sticky-note"></i> ${task.notes.substring(0, 50)}${task.notes.length > 50 ? '...' : ''}</div>` : ''}
             </div>
             <div class="task-actions">
+                <button class="btn-pin-task ${task.pinned ? 'active' : ''}" data-id="${task.id}" title="${task.pinned ? 'Unpin task' : 'Pin task'}">
+                    <i class="fas fa-thumbtack"></i>
+                </button>
                 <button class="btn-edit-task" data-id="${task.id}" title="Edit task">
                     <i class="fas fa-edit"></i>
                 </button>
@@ -143,6 +186,11 @@ function renderTasks(tasks) {
         // Edit event
         taskEl.querySelector('.btn-edit-task').addEventListener('click', function() {
             window.location.href = `edit-task-popup.html?id=${task.id}`;
+        });
+        
+        // Pin event
+        taskEl.querySelector('.btn-pin-task').addEventListener('click', function() {
+            toggleTaskPin(task.id, !task.pinned);
         });
         
         // Delete event
@@ -165,6 +213,20 @@ async function toggleTaskCompletion(taskId, isCompleted) {
     } catch (error) {
         console.error('Error toggling task:', error);
         showNotification('Error', error.message || 'Failed to update task');
+    }
+}
+
+async function toggleTaskPin(taskId, isPinned) {
+    try {
+        await syncService.updateTask(taskId, {
+            pinned: isPinned
+        });
+        
+        loadTasks();
+        // showNotification(isPinned ? 'Pinned' : 'Unpinned', isPinned ? 'Task pinned to top.' : 'Task unpinned.');
+    } catch (error) {
+        console.error('Error pinning task:', error);
+        showNotification('Error', error.message || 'Failed to update task pin status');
     }
 }
 
@@ -307,4 +369,33 @@ function showConfirmModal(title, message, onConfirm) {
     overlay.addEventListener('click', function(e) {
         if (e.target === overlay) overlay.remove();
     });
+}
+
+function populateClassFilter(tasks) {
+    const classFilter = document.getElementById('task-class-filter');
+    if (!classFilter) return;
+
+    // Get current selection to preserve it if possible
+    const currentSelection = classFilter.value;
+
+    // Extract unique class names
+    const classNames = [...new Set(tasks.map(t => t.className).filter(Boolean))].sort();
+
+    // Reset options
+    classFilter.innerHTML = '<option value="all">All Classes</option>';
+
+    classNames.forEach(className => {
+        const option = document.createElement('option');
+        option.value = className;
+        option.textContent = className;
+        classFilter.appendChild(option);
+    });
+
+    // Restore selection if it still exists
+    if (classNames.includes(currentSelection)) {
+        classFilter.value = currentSelection;
+    } else {
+        classFilter.value = 'all';
+        currentClassFilter = 'all'; // Reset filter if class no longer exists
+    }
 }

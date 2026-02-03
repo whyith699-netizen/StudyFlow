@@ -1,13 +1,13 @@
 /**
  * Show custom confirmation modal (better than browser confirm for extensions)
  */
-function showConfirmModal(title, message, onConfirm) {
+function showConfirmModal(title, message, onConfirm, iconClass = 'fa-exclamation-triangle') {
     const overlay = document.createElement('div');
     overlay.className = 'confirm-modal-overlay';
     overlay.innerHTML = `
         <div class="confirm-modal">
             <div class="confirm-modal-icon">
-                <i class="fas fa-exclamation-triangle"></i>
+                <i class="fas ${iconClass}"></i>
             </div>
             <div class="confirm-modal-title">${title}</div>
             <div class="confirm-modal-message">${message}</div>

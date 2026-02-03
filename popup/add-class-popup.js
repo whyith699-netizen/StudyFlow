@@ -248,12 +248,17 @@ async function addClass(e) {
     }
     
     try {
+        // Get existing classes to determine order
+        const existingClasses = await syncService.getClasses();
+        const maxOrder = existingClasses.reduce((max, cls) => Math.max(max, cls.order || 0), -1);
+
         const newClass = {
             id: 'class-' + Date.now(),
             name: name,
             links: links,
             days: selectedDays,
-            icon: selectedIcon
+            icon: selectedIcon,
+            order: maxOrder + 1
         };
         
         await syncService.addClass(newClass);
