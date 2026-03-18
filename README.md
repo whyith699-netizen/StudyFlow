@@ -1,131 +1,282 @@
-# Study Dashboard - Chrome Extension Distribution
+# Study Dashboard
 
-Repository ini adalah repository distribusi untuk file rilis Chrome Extension **Study Dashboard**. Isi utamanya adalah paket `.zip` siap pakai yang dapat di-extract lalu dimuat ke Chrome melalui mode developer.
+![Version](https://img.shields.io/badge/version-1.4-blue)
+![Manifest](https://img.shields.io/badge/manifest-v3-green)
+![Build](https://img.shields.io/badge/build-production-success)
+![Package](https://img.shields.io/badge/distribution-zip-orange)
+![UI](https://img.shields.io/badge/ui-react-61dafb)
+![Sync](https://img.shields.io/badge/sync-firebase-ffca28)
 
-## Informasi Rilis
+Chrome extension for study management, task tracking, class organization, deadlines, and cloud sync.
 
-- Nama produk: `Study Dashboard`
-- Tipe: `Chrome Extension`
-- Versi terbaru: `1.4`
-- Manifest: `v3`
-- File distribusi terbaru: `StudyFlow-v1.4.zip`
-- Repository distribusi: `https://github.com/whyith699-netizen/StudyFlow`
+Ekstensi Chrome untuk manajemen belajar, pengelolaan tugas, pengaturan kelas, deadline, dan sinkronisasi cloud.
 
-## Gambaran Singkat
+## Quick Links
 
-Study Dashboard adalah extension produktivitas belajar yang menggabungkan pengelolaan tugas, jadwal kelas, deadline, timer belajar, dan sinkronisasi data cloud dalam satu dashboard popup di browser. Extension ini ditujukan untuk membantu pengguna mengatur kegiatan akademik secara lebih rapi tanpa harus membuka aplikasi terpisah.
+- Download latest package: [StudyFlow-v1.4.zip](./StudyFlow-v1.4.zip)
+- Screenshots folder: [docs/screenshots](./docs/screenshots)
 
-Versi distribusi di repository ini sudah melalui proses build production dari source project, termasuk minify untuk output bundle dan obfuscation pada berkas JavaScript hasil build.
+## Repository Purpose / Tujuan Repository
 
-## Isi Repository
+This repository is the distribution repository for the **Study Dashboard** Chrome extension. It is intended to store the latest packaged build artifact and release-oriented documentation.
 
-Repository ini dipakai untuk distribusi release, sehingga isinya sengaja sederhana:
+Repository ini adalah repository distribusi untuk Chrome extension **Study Dashboard**. Fungsinya untuk menyimpan artefak build terbaru yang siap dipakai serta dokumentasi rilis.
 
-- `StudyFlow-v1.4.zip`
-  Paket extension terbaru yang siap diunduh dan di-load ke Chrome.
-- `README.md`
-  Dokumentasi penggunaan, instalasi, pembaruan, dan informasi rilis.
+This is not meant to be the main development repository. The release package is built from the extension source workspace, then packaged into a `.zip` file for installation through Chrome developer mode.
 
-Versi lama `StudyFlow-v1.3.zip` sudah dihapus agar repository hanya menyimpan artefak terbaru.
+Repository ini bukan fokus utama untuk pengembangan source code. Paket rilis dibangun dari source extension, lalu dikemas menjadi file `.zip` untuk dipasang melalui mode developer di Chrome.
 
-## Fitur Utama
+## Release Information / Informasi Rilis
 
-### Manajemen Tugas
+| Field | Value |
+| --- | --- |
+| Product / Produk | `Study Dashboard` |
+| Type / Tipe | `Chrome Extension` |
+| Latest Version / Versi Terbaru | `1.4` |
+| Manifest | `V3` |
+| Package / Paket | `StudyFlow-v1.4.zip` |
+| Distribution Repo | `whyith699-netizen/StudyFlow` |
+
+## Overview / Ringkasan
+
+Study Dashboard is designed to centralize common academic workflows in a browser popup. It combines task management, class scheduling, deadline visibility, timer support, and account-based sync into one compact extension experience.
+
+Study Dashboard dirancang untuk memusatkan alur kerja akademik umum dalam popup browser. Ekstensi ini menggabungkan manajemen tugas, jadwal kelas, visibilitas deadline, dukungan timer, dan sinkronisasi berbasis akun dalam satu pengalaman yang ringkas.
+
+The current `v1.4` package in this repository is a production build. The output has been minified and bundled for distribution, and the previous `v1.3` zip has been removed so the repository stays focused on the latest release.
+
+Paket `v1.4` saat ini di repository ini adalah hasil build production. Output sudah diminify dan dibundle untuk distribusi, dan file zip `v1.3` sebelumnya telah dihapus agar repository tetap fokus pada rilis terbaru.
+
+## Main Features / Fitur Utama
+
+### Task Management / Manajemen Tugas
+
+- Create, edit, and delete tasks.
+- Mark tasks as important.
+- Mark tasks as completed.
+- Set deadlines with date and time.
+- Group tasks by class.
+- Review upcoming and completed work.
 
 - Membuat, mengedit, dan menghapus task.
 - Menandai task sebagai penting.
 - Menandai task sebagai selesai.
-- Mengatur deadline lengkap dengan waktu.
+- Mengatur deadline beserta tanggal dan waktu.
 - Mengelompokkan task berdasarkan kelas.
-- Melihat status tugas yang akan datang dan yang sudah selesai.
+- Melihat pekerjaan yang akan datang maupun yang sudah selesai.
 
-### Organisasi Kelas
+### Class Organization / Organisasi Kelas
+
+- Create multiple classes or subjects.
+- Attach class-related links such as Zoom or Drive.
+- Configure schedules by day.
+- Use class-specific icons or identity markers.
+- View tasks connected to a class.
 
 - Membuat banyak kelas atau mata pelajaran.
-- Menambahkan ikon atau identitas kelas.
-- Menyimpan tautan pendukung seperti Zoom, Drive, atau referensi lain.
-- Menentukan jadwal kelas berdasarkan hari.
-- Melihat tugas yang terhubung dengan kelas tertentu.
+- Menambahkan tautan terkait kelas seperti Zoom atau Drive.
+- Mengatur jadwal berdasarkan hari.
+- Menggunakan ikon atau identitas untuk tiap kelas.
+- Melihat tugas yang terhubung ke kelas tertentu.
 
-### Sinkronisasi Cloud
+### Cloud Sync / Sinkronisasi Cloud
 
-- Sinkronisasi data menggunakan Firebase.
-- Mendukung login Google.
-- Mendukung login email dan password.
-- Menyimpan data pengguna secara terpisah per akun.
+- Firebase-based synchronization.
+- Google sign-in support.
+- Email and password authentication.
+- User-scoped data separation.
 
-### Dashboard Produktivitas
+- Sinkronisasi berbasis Firebase.
+- Dukungan login Google.
+- Autentikasi email dan password.
+- Pemisahan data per pengguna.
 
-- Popup extension yang cepat dibuka dari toolbar Chrome.
-- Tampilan responsif untuk area popup extension.
-- Pencarian dan filtering data.
-- Dukungan notifikasi deadline.
-- Mendukung fitur timer dan pelacakan aktivitas belajar.
+### Productivity Dashboard / Dashboard Produktivitas
 
-## Cara Install di Chrome
+- Fast popup-based workflow in Chrome.
+- Deadline reminders and notifications.
+- Search and filtering support.
+- Timer and study activity workflow.
+- Responsive popup layout.
 
-Karena extension ini didistribusikan dalam bentuk zip untuk mode developer, instalasinya menggunakan metode `Load unpacked`.
+- Alur kerja cepat melalui popup di Chrome.
+- Pengingat deadline dan notifikasi.
+- Dukungan pencarian dan filter.
+- Fitur timer dan aktivitas belajar.
+- Layout popup yang responsif.
 
-### Langkah Instalasi
+## Screenshots / Tangkapan Layar
 
-1. Download file `StudyFlow-v1.4.zip` dari repository ini.
-2. Extract file zip ke folder lokal.
-3. Buka Chrome lalu masuk ke `chrome://extensions/`.
-4. Aktifkan `Developer mode` di kanan atas.
-5. Klik tombol `Load unpacked`.
-6. Pilih folder hasil extract.
-7. Extension `Study Dashboard` akan muncul di daftar extension dan siap digunakan.
+### Installation / Instalasi
 
-### Setelah Berhasil Terpasang
+Chrome Extensions page before loading unpacked:
 
-1. Klik ikon extension pada toolbar Chrome.
-2. Login menggunakan Google atau email/password.
-3. Tambahkan kelas.
-4. Tambahkan task dan deadline.
-5. Gunakan dashboard popup untuk memantau aktivitas belajar.
+Halaman Chrome Extensions sebelum memuat extension:
 
-## Cara Update ke Versi Baru
+![Install Chrome Extensions](./docs/screenshots/install-chrome-extensions.png)
 
-Extension yang dipasang lewat `Load unpacked` tidak update otomatis seperti extension dari Chrome Web Store. Untuk itu pembaruan dilakukan manual.
+Manifest view from the built extension package:
 
-### Langkah Update
+Tampilan manifest dari hasil build extension:
 
-1. Download file rilis terbaru dari repository ini.
-2. Extract ke folder baru atau timpa folder extension lama.
-3. Buka `chrome://extensions/`.
-4. Cari `Study Dashboard`.
-5. Klik tombol `Reload`.
-6. Extension akan berjalan dengan versi terbaru.
+![Manifest View](./docs/screenshots/manifest-view.png)
 
-## Konten di Dalam Paket Zip
+### Dashboard
 
-File `StudyFlow-v1.4.zip` berisi hasil build production dari folder `dist/` extension. Struktur utamanya mencakup:
+Main popup dashboard:
+
+Dashboard popup utama:
+
+![Dashboard](./docs/screenshots/dashboard.png)
+
+### Class Detail
+
+Class detail view:
+
+Tampilan detail kelas:
+
+![Class Detail](./docs/screenshots/class-detail.png)
+
+### Tasks
+
+Task list view:
+
+Tampilan daftar tugas:
+
+![Tasks](./docs/screenshots/tasks.png)
+
+### Theme and Language
+
+Theme and language settings view:
+
+Tampilan pengaturan tema dan bahasa:
+
+![Theme and Language](./docs/screenshots/theme-language.png)
+
+## Package Contents / Isi Paket
+
+The distributed zip contains the built output from the extension `dist/` folder, including:
+
+File zip distribusi berisi output build dari folder `dist/` extension, termasuk:
 
 - `manifest.json`
 - `index.html`
 - `service-worker-loader.js`
-- folder `assets/`
-- folder `public/assets/icons/`
-- folder `.vite/`
+- `assets/`
+- `public/assets/icons/`
+- `.vite/`
 
-Dengan kata lain, file zip ini bukan source mentah, tetapi output build yang memang ditujukan untuk distribusi dan penggunaan langsung di browser.
+This means the zip is ready for use after extraction and is not a raw development source snapshot.
 
-## Detail Teknis Rilis
+Artinya, file zip ini siap dipakai setelah diekstrak dan bukan snapshot source development mentah.
 
-Rilis `v1.4` dibangun dari source extension dengan pendekatan berikut:
+## Installation Guide / Panduan Instalasi
 
-- Build tool: `Vite`
-- Framework UI: `React`
-- Chrome extension plugin: `@crxjs/vite-plugin`
-- Minify: `terser`
-- Obfuscation: `rollup-plugin-obfuscator`
-- Manifest Chrome Extension: `Manifest V3`
+### English
 
-Build production menghapus `console` dan `debugger` dari bundle output untuk hasil rilis yang lebih bersih.
+1. Download [StudyFlow-v1.4.zip](./StudyFlow-v1.4.zip).
+2. Extract the zip to a local folder.
+3. Open `chrome://extensions/`.
+4. Enable `Developer mode`.
+5. Click `Load unpacked`.
+6. Select the extracted folder.
+7. Open the extension from the Chrome toolbar.
 
-## Permission Extension
+### Bahasa Indonesia
 
-Extension ini menggunakan sejumlah permission yang diperlukan untuk fitur inti. Pada rilis `1.4`, permission utamanya mencakup:
+1. Download [StudyFlow-v1.4.zip](./StudyFlow-v1.4.zip).
+2. Extract file zip ke folder lokal.
+3. Buka `chrome://extensions/`.
+4. Aktifkan `Developer mode`.
+5. Klik `Load unpacked`.
+6. Pilih folder hasil extract.
+7. Buka extension dari toolbar Chrome.
+
+## First Use / Penggunaan Awal
+
+### English
+
+1. Open the extension popup.
+2. Sign in with Google or with email/password.
+3. Add one or more classes.
+4. Add tasks and deadlines.
+5. Use the dashboard to monitor your study workflow.
+
+### Bahasa Indonesia
+
+1. Buka popup extension.
+2. Login dengan Google atau email/password.
+3. Tambahkan satu atau beberapa kelas.
+4. Tambahkan task dan deadline.
+5. Gunakan dashboard untuk memantau alur belajar.
+
+## Updating to New Versions / Update ke Versi Baru
+
+Extensions installed using `Load unpacked` do not update automatically. To update:
+
+Extension yang dipasang menggunakan `Load unpacked` tidak update otomatis. Untuk memperbarui:
+
+### English
+
+1. Download the latest zip from this repository.
+2. Replace the old extracted folder with the new one.
+3. Open `chrome://extensions/`.
+4. Find `Study Dashboard`.
+5. Click `Reload`.
+
+### Bahasa Indonesia
+
+1. Download zip terbaru dari repository ini.
+2. Ganti folder extract lama dengan folder yang baru.
+3. Buka `chrome://extensions/`.
+4. Cari `Study Dashboard`.
+5. Klik `Reload`.
+
+## Changelog / Catatan Perubahan
+
+### v1.4
+
+- Latest production package rebuilt and distributed as `StudyFlow-v1.4.zip`.
+- Distribution repository now keeps only the latest zip artifact.
+- README expanded with bilingual documentation.
+- Added badges, screenshot gallery, installation steps, and release details.
+- Verified manifest release version remains `1.4`.
+
+- Paket production terbaru dibangun ulang dan didistribusikan sebagai `StudyFlow-v1.4.zip`.
+- Repository distribusi sekarang hanya menyimpan artefak zip terbaru.
+- README diperluas dengan dokumentasi bilingual.
+- Ditambahkan badge, galeri screenshot, langkah instalasi, dan detail rilis.
+- Versi rilis pada manifest terverifikasi tetap `1.4`.
+
+### v1.3
+
+- Previous distribution zip version before the current release.
+- Removed from this repository after `v1.4` was published.
+
+- Versi zip distribusi sebelum rilis saat ini.
+- Dihapus dari repository ini setelah `v1.4` dipublikasikan.
+
+## Technical Details / Detail Teknis
+
+| Area | Value |
+| --- | --- |
+| Build tool | `Vite` |
+| UI | `React` |
+| Extension plugin | `@crxjs/vite-plugin` |
+| Minifier | `terser` |
+| Obfuscation | `rollup-plugin-obfuscator` |
+| Current package version | `1.4.0` in package metadata |
+| Current manifest version | `1.4` in `manifest.json` |
+
+The production build removes `console` and `debugger` statements and outputs bundled assets suitable for release packaging.
+
+Build production menghapus `console` dan `debugger`, lalu menghasilkan asset bundle yang sesuai untuk pengemasan rilis.
+
+## Permissions / Permission
+
+The currently packaged extension uses the following main permissions:
+
+Extension yang saat ini dikemas menggunakan permission utama berikut:
 
 - `storage`
 - `activeTab`
@@ -136,70 +287,94 @@ Extension ini menggunakan sejumlah permission yang diperlukan untuk fitur inti. 
 - `identity`
 - `declarativeNetRequest`
 
-Host permission yang dipakai:
+Host permissions:
+
+Host permission:
 
 - `https://*.googleapis.com/*`
 - `https://*.firebaseio.com/*`
 - `https://*.gstatic.com/*`
 
-Permission tersebut digunakan untuk penyimpanan lokal, autentikasi, sinkronisasi cloud, alarm/notifikasi, serta integrasi yang diperlukan untuk fitur extension.
+These are used for storage, authentication, sync, browser integration, reminders, and related extension features.
 
-## Keamanan dan Privasi
+Permission tersebut dipakai untuk penyimpanan, autentikasi, sinkronisasi, integrasi browser, pengingat, dan fitur extension terkait.
 
-Beberapa catatan penting terkait keamanan:
+## Security and Privacy / Keamanan dan Privasi
 
-- Extension menggunakan autentikasi pengguna sehingga data tidak terbuka ke semua orang.
-- Sinkronisasi data bergantung pada Firebase.
-- API client-side tetap harus dilindungi oleh aturan backend seperti Firestore Security Rules.
-- Repository distribusi ini tidak dimaksudkan untuk menyimpan rahasia server.
-- Paket zip di repo ini adalah artefak build yang siap digunakan pengguna akhir.
+### English
 
-## Troubleshooting
+- User data is tied to authenticated access.
+- Cloud-backed behavior depends on Firebase configuration.
+- Client-side credentials still require secure backend rules.
+- This repository is intended for distribution artifacts, not server secrets.
 
-Jika extension tidak muncul atau gagal dijalankan setelah di-load:
+### Bahasa Indonesia
 
-1. Pastikan folder yang dipilih adalah hasil extract zip, bukan file zip langsung.
-2. Pastikan `Developer mode` sudah aktif.
-3. Klik `Reload` pada extension setelah mengganti file.
-4. Periksa apakah Chrome menampilkan error pada halaman `chrome://extensions/`.
-5. Jika perlu, hapus extension lalu lakukan `Load unpacked` ulang dari folder hasil extract yang bersih.
+- Data pengguna terikat pada akses yang sudah diautentikasi.
+- Perilaku sinkronisasi cloud bergantung pada konfigurasi Firebase.
+- Kredensial sisi klien tetap memerlukan aturan backend yang aman.
+- Repository ini ditujukan untuk artefak distribusi, bukan penyimpanan rahasia server.
 
-Jika login atau sinkronisasi bermasalah:
+## Troubleshooting / Pemecahan Masalah
 
-1. Pastikan koneksi internet aktif.
-2. Pastikan layanan Firebase dan autentikasi pada source project memang terkonfigurasi benar.
-3. Reload extension lalu login ulang.
+### If the extension does not load / Jika extension tidak mau dimuat
 
-## Catatan Untuk Developer
+1. Make sure you selected the extracted folder, not the zip file.
+2. Confirm `Developer mode` is enabled.
+3. Reload the extension from `chrome://extensions/`.
+4. Check Chrome error messages shown under the extension card.
+5. Remove and load the unpacked extension again if needed.
 
-Repository ini adalah repository distribusi, bukan source repository utama. Source extension utama berada pada workspace project internal di folder `Extension/`, kemudian dibuild menjadi output `dist/`, dikemas ke `StudyFlow-v1.4.zip`, lalu dipush ke repository ini sebagai artefak rilis terbaru.
+1. Pastikan yang dipilih adalah folder hasil extract, bukan file zip.
+2. Pastikan `Developer mode` aktif.
+3. Reload extension dari `chrome://extensions/`.
+4. Cek pesan error Chrome di bawah kartu extension.
+5. Hapus lalu load unpacked ulang jika diperlukan.
 
-Alur rilis yang dipakai untuk versi ini:
+### If sign-in or sync fails / Jika login atau sync gagal
 
-1. Build production dari source extension.
-2. Pastikan versi manifest adalah `1.4`.
-3. Kemas folder `dist/` menjadi `StudyFlow-v1.4.zip`.
-4. Hapus zip versi lama dari repository distribusi.
-5. Tambahkan atau perbarui `README.md`.
+1. Verify your internet connection.
+2. Reload the extension.
+3. Try signing in again.
+4. Review the Firebase-side setup in the source project if the issue persists.
+
+1. Periksa koneksi internet.
+2. Reload extension.
+3. Coba login ulang.
+4. Tinjau konfigurasi Firebase di source project jika masalah tetap muncul.
+
+## Distribution Workflow / Alur Distribusi
+
+### English
+
+1. Build the extension in production mode.
+2. Verify the manifest version.
+3. Package the `dist/` output into `StudyFlow-v1.4.zip`.
+4. Replace the previous release artifact.
+5. Update release documentation.
+6. Commit and push to `origin/main`.
+
+### Bahasa Indonesia
+
+1. Build extension dalam mode production.
+2. Verifikasi versi manifest.
+3. Kemas output `dist/` menjadi `StudyFlow-v1.4.zip`.
+4. Ganti artefak rilis sebelumnya.
+5. Perbarui dokumentasi rilis.
 6. Commit dan push ke `origin/main`.
 
-## Riwayat Versi Distribusi
+## Developer Note / Catatan Developer
 
-- `v1.4`
-  Rilis terbaru yang tersedia saat ini di repository distribusi.
-- `v1.3`
-  Versi sebelumnya, sudah digantikan dan dihapus dari repository agar distribusi tetap fokus pada artefak terbaru.
+This repository focuses on release delivery. Source-level feature development should happen in the extension source workspace, then be rebuilt and republished here.
 
-## Lisensi dan Penggunaan
+Repository ini fokus pada distribusi rilis. Pengembangan fitur pada level source sebaiknya dilakukan di workspace source extension, lalu dibuild ulang dan dipublikasikan kembali ke sini.
 
-Jika repository source utama memiliki lisensi terpisah, maka penggunaan extension tetap mengikuti lisensi pada source project tersebut. Repository ini berfungsi terutama sebagai saluran distribusi artefak build.
+## Support / Dukungan
 
-## Dukungan
+If you find an issue in the packaged release, start by checking the installation steps and the Chrome extension error panel.
 
-Jika ada masalah pada file distribusi:
+Jika Anda menemukan masalah pada paket rilis, mulai dari memeriksa langkah instalasi dan panel error extension di Chrome.
 
-- periksa kembali langkah install,
-- gunakan versi zip terbaru,
-- dan cek error pada halaman `chrome://extensions/`.
+For future releases, the recommended flow is to update the extension source, run a fresh production build, generate a new zip version, and then refresh this distribution repository.
 
-Untuk pengembangan lebih lanjut, perubahan sebaiknya dilakukan di source extension, lalu dibuild ulang dan didistribusikan kembali ke repository ini.
+Untuk rilis berikutnya, alur yang disarankan adalah memperbarui source extension, menjalankan build production baru, membuat versi zip baru, lalu menyegarkan repository distribusi ini.
