@@ -1,0 +1,45 @@
+{
+  "../../../@crx/manifest": {
+    "file": "assets/crx-manifest.js-BahjzEmu.js",
+    "name": "crx-manifest.js",
+    "src": "../../../@crx/manifest",
+    "isEntry": true
+  },
+  "_firebase-PziYMuVG.js": {
+    "file": "assets/firebase-PziYMuVG.js",
+    "name": "firebase"
+  },
+  "_main-!~{003}~.js": {
+    "file": "assets/main-vishy5gl.css",
+    "src": "_main-!~{003}~.js"
+  },
+  "_main-DVcaTBqE.js": {
+    "file": "assets/main-DVcaTBqE.js",
+    "name": "main",
+    "imports": [
+      "_firebase-PziYMuVG.js"
+    ],
+    "css": [
+      "assets/main-vishy5gl.css"
+    ]
+  },
+  "index.html": {
+    "file": "assets/index.html-BDC71jsD.js",
+    "name": "index.html",
+    "src": "index.html",
+    "isEntry": true,
+    "imports": [
+      "_main-DVcaTBqE.js",
+      "_firebase-PziYMuVG.js"
+    ]
+  },
+  "src/background/index.js": {
+    "file": "assets/index.js-DhD2AIbP.js",
+    "name": "index.js",
+    "src": "src/background/index.js",
+    "isEntry": true,
+    "imports": [
+      "_firebase-PziYMuVG.js"
+    ]
+  }
+}

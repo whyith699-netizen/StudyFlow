@@ -1,0 +1,70 @@
+version: "2"
+type: frontend
+tech_stack:
+  - react
+  - vite
+  - tailwindcss
+  - firebase
+routes:
+  - path: /
+    file: src/pages/HomePage.jsx
+    auth_required: true
+    description: Main dashboard
+  - path: /class/:id
+    file: src/pages/ClassDetailPage.jsx
+    auth_required: true
+    description: View class details
+  - path: /class/add
+    file: src/pages/AddClassPage.jsx
+    auth_required: true
+    description: Add new class
+  - path: /class/edit/:id
+    file: src/pages/AddClassPage.jsx
+    auth_required: true
+    description: Edit class
+  - path: /task/add
+    file: src/pages/AddTaskPage.jsx
+    auth_required: true
+    description: Add task
+  - path: /task/edit/:id
+    file: src/pages/AddTaskPage.jsx
+    auth_required: true
+    description: Edit task
+  - path: /tasks
+    file: src/pages/MyTasksPage.jsx
+    auth_required: true
+    description: View tasks
+features:
+  - name: User Login
+    description: Login with email and password
+    files:
+      - src/pages/LoginPage.jsx
+      - src/contexts/AuthContext.jsx
+    entry_route: /
+    user_interactions:
+      - Fill email input field
+      - Fill password input field
+      - Click Login button to submit
+    api_calls: []
+    auth_required: false
+  - name: Manage Classes
+    description: Add, edit, and view classes
+    files:
+      - src/pages/AddClassPage.jsx
+      - src/pages/ClassDetailPage.jsx
+    entry_route: /
+    user_interactions:
+      - Click add class, fill form, submit
+    api_calls: []
+    auth_required: true
+  - name: Manage Tasks
+    description: Add, edit, and view tasks
+    files:
+      - src/pages/AddTaskPage.jsx
+      - src/pages/MyTasksPage.jsx
+    entry_route: /tasks
+    user_interactions:
+      - Click add task, fill form, submit
+    api_calls: []
+    auth_required: true
+known_limitations: []
