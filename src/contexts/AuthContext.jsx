@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { auth } from '../services/firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { apiCreateUserProfile } from '../services/apiService'
 
 const AuthContext = createContext()
 
@@ -9,9 +10,20 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser)
       setIsLoading(false)
+
+      // Fase 4: Pastikan user terdaftar di MariaDB setiap kali login
+      if (firebaseUser) {
+        apiCreateUserProfile({
+          uid:         firebaseUser.uid,
+          email:       firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL:    firebaseUser.photoURL,
+          lastLogin:   new Date().toISOString(),
+        }).catch(err => console.warn('[AUTH] Gagal sync user ke MariaDB:', err.message))
+      }
     })
     return () => unsubscribe()
   }, [])

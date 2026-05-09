@@ -1,7 +1,14 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useAuth } from './AuthContext'
 import * as sync from '../services/syncService'
+import * as api from '../services/apiService'
 import { mergeStudyTools, normalizeCustomStudyTools } from '../config/studyTools'
+
+// ──────────────────────────────────────────────────────────────────────────────
+// FASE 4: Gunakan MariaDB API sebagai sumber data PRIMER.
+// Set ke false untuk kembali ke Firestore (rollback).
+// ──────────────────────────────────────────────────────────────────────────────
+const USE_API_AS_PRIMARY = true
 
 const DataContext = createContext()
 
@@ -81,42 +88,89 @@ export function DataProvider({ children }) {
     chrome.storage.local.set(data)
   }, [])
 
+  // ── Muat dari MariaDB API (Fase 4 — Primer) ─────────────────────────────────
+  const loadFromAPI = useCallback(async () => {
+    const [rawClasses, rawTasks, rawStudyTools] = await Promise.all([
+      api.apiGetClasses(user.uid),
+      api.apiGetTasks(user.uid),
+      api.apiGetStudyTools(user.uid),
+    ])
+
+    // Normalisasi format API ke format internal (sama dengan Firestore)
+    const cloudClasses     = normalizeClasses(rawClasses || [])
+    const normalizedTasks  = normalizeTasks(rawTasks || [], cloudClasses)
+    const normalizedTools  = normalizeCustomStudyTools(rawStudyTools || [])
+
+    setClasses(cloudClasses)
+    setTasks(normalizedTasks)
+    setCustomStudyTools(normalizedTools)
+    saveLocal(cloudClasses, normalizedTasks, normalizedTools)
+
+    console.log('[DATA] Loaded from MariaDB API:', {
+      classes: cloudClasses.length,
+      tasks: normalizedTasks.length,
+      studyTools: normalizedTools.length,
+    })
+  }, [saveLocal, user])
+
+  // ── Muat dari Firestore (Fase 2/3/fallback) ──────────────────────────────────
+  const loadFromFirestore = useCallback(async () => {
+    const [rawClasses, cloudTasks, cloudStudyTools] = await Promise.all([
+      sync.getClasses(user.uid),
+      sync.getTasks(user.uid),
+      sync.getStudyTools(user.uid),
+    ])
+
+    const cloudClasses    = normalizeClasses(rawClasses)
+    const normalizedTasks = normalizeTasks(cloudTasks, cloudClasses)
+    const normalizedTools = normalizeCustomStudyTools(cloudStudyTools)
+
+    setClasses(cloudClasses)
+    setTasks(normalizedTasks)
+    setCustomStudyTools(normalizedTools)
+    saveLocal(cloudClasses, normalizedTasks, normalizedTools)
+
+    // Realtime listener Firestore (hanya aktif saat Firestore mode)
+    if (unsubRef.current) unsubRef.current()
+    unsubRef.current = sync.listenForChanges(user.uid, async () => {
+      const [rawC, t, tools] = await Promise.all([
+        sync.getClasses(user.uid),
+        sync.getTasks(user.uid),
+        sync.getStudyTools(user.uid),
+      ])
+      const nc = normalizeClasses(rawC)
+      const nt = normalizeTasks(t, nc)
+      const ntools = normalizeCustomStudyTools(tools)
+      setClasses(nc)
+      setTasks(nt)
+      setCustomStudyTools(ntools)
+      saveLocal(nc, nt, ntools)
+    })
+
+    console.log('[DATA] Loaded from Firestore (fallback)')
+  }, [saveLocal, user])
+
   const loadData = useCallback(async () => {
     setIsLoading(true)
     try {
       if (user) {
-        const [rawClasses, cloudTasks, cloudStudyTools] = await Promise.all([
-          sync.getClasses(user.uid),
-          sync.getTasks(user.uid),
-          sync.getStudyTools(user.uid),
-        ])
-
-        const cloudClasses = normalizeClasses(rawClasses)
-        const normalizedTasks = normalizeTasks(cloudTasks, cloudClasses)
-        const normalizedStudyTools = normalizeCustomStudyTools(cloudStudyTools)
-
-        setClasses(cloudClasses)
-        setTasks(normalizedTasks)
-        setCustomStudyTools(normalizedStudyTools)
-        saveLocal(cloudClasses, normalizedTasks, normalizedStudyTools)
-
-        if (unsubRef.current) unsubRef.current()
-        unsubRef.current = sync.listenForChanges(user.uid, async () => {
-          const [rawC, t, tools] = await Promise.all([
-            sync.getClasses(user.uid),
-            sync.getTasks(user.uid),
-            sync.getStudyTools(user.uid),
-          ])
-
-          const normalizedClasses = normalizeClasses(rawC)
-          const normalizedTasksNext = normalizeTasks(t, normalizedClasses)
-          const normalizedTools = normalizeCustomStudyTools(tools)
-
-          setClasses(normalizedClasses)
-          setTasks(normalizedTasksNext)
-          setCustomStudyTools(normalizedTools)
-          saveLocal(normalizedClasses, normalizedTasksNext, normalizedTools)
-        })
+        if (USE_API_AS_PRIMARY) {
+          // ── FASE 4: Baca dari MariaDB API ──────────────────────────────────
+          try {
+            await loadFromAPI()
+          } catch (apiErr) {
+            console.warn('[DATA] API gagal, fallback ke Firestore:', apiErr.message)
+            try {
+              await loadFromFirestore()
+            } catch (fsErr) {
+              console.error('[DATA] Firestore fallback juga gagal:', fsErr.message)
+              throw fsErr
+            }
+          }
+        } else {
+          // ── FASE 2/3: Baca dari Firestore (dengan dual-write ke API) ───────
+          await loadFromFirestore()
+        }
       } else if (typeof chrome !== 'undefined' && chrome.storage?.local) {
         chrome.storage.local.get(['myClasses', 'tasks', 'studyTools'], (result) => {
           if (!chrome.runtime.lastError) {
@@ -134,7 +188,8 @@ export function DataProvider({ children }) {
         setCustomStudyTools([])
       }
     } catch (err) {
-      console.error('Failed to load data:', err)
+      console.error('[DATA] Gagal memuat data:', err)
+      // Last resort: baca dari local storage
       if (typeof chrome !== 'undefined' && chrome.storage?.local) {
         chrome.storage.local.get(['myClasses', 'tasks', 'studyTools'], (result) => {
           const normalizedClasses = normalizeClasses(result.myClasses || [])
@@ -145,7 +200,7 @@ export function DataProvider({ children }) {
       }
     }
     setIsLoading(false)
-  }, [saveLocal, user])
+  }, [saveLocal, user, loadFromAPI, loadFromFirestore])
 
   useEffect(() => {
     loadData()
